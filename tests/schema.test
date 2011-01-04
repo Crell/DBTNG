@@ -69,12 +69,12 @@ class SchemaTestCase extends DBTNG_PHPUnit_Framework_TestCase {
 
     // Test for fake index and test for the boolean result of indexExists().
     $index_exists = Database::getConnection()->schema()->indexExists('test_table', 'test_field');
-    $this->assertIdentical($index_exists, FALSE, t('Fake index does not exists'));
+    $this->assertSame($index_exists, FALSE, t('Fake index does not exists'));
     // Add index.
     db_add_index('test_table', 'test_field', array('test_field'));
     // Test for created index and test for the boolean result of indexExists().
     $index_exists = Database::getConnection()->schema()->indexExists('test_table', 'test_field');
-    $this->assertIdentical($index_exists, TRUE, t('Index created.'));
+    $this->assertSame($index_exists, TRUE, t('Index created.'));
 
     // Rename the table.
     db_rename_table('test_table', 'test_table2');
@@ -90,7 +90,7 @@ class SchemaTestCase extends DBTNG_PHPUnit_Framework_TestCase {
 
     // We should have successfully inserted exactly two rows.
     $count = db_query('SELECT COUNT(*) FROM {test_table2}')->fetchField();
-    $this->assertEqual($count, 2, t('Two fields were successfully inserted.'));
+    $this->assertEquals($count, 2, t('Two fields were successfully inserted.'));
 
     // Try to drop the table.
     db_drop_table('test_table2');
@@ -117,7 +117,7 @@ class SchemaTestCase extends DBTNG_PHPUnit_Framework_TestCase {
     $this->assertTrue($max2 > $max1, t('The serial is monotone.'));
 
     $count = db_query('SELECT COUNT(*) FROM {test_table}')->fetchField();
-    $this->assertEqual($count, 2, t('There were two rows.'));
+    $this->assertEquals($count, 2, t('There were two rows.'));
 
     // Use database specific data type and ensure that table is created.
     $table_specification = array(
@@ -164,7 +164,7 @@ class SchemaTestCase extends DBTNG_PHPUnit_Framework_TestCase {
   function checkSchemaComment($description, $table, $column = NULL) {
     if (method_exists(Database::getConnection()->schema(), 'getComment')) {
       $comment = Database::getConnection()->schema()->getComment($table, $column);
-      $this->assertEqual($comment, $description, t('The comment matches the schema description.'));
+      $this->assertEquals($comment, $description, t('The comment matches the schema description.'));
     }
   }
 
@@ -314,7 +314,8 @@ class SchemaTestCase extends DBTNG_PHPUnit_Framework_TestCase {
       'primary key' => array('serial_column'),
     );
     db_create_table($table_name, $table_spec);
-    $this->pass(t('Table %table created.', array('%table' => $table_name)));
+    // Assert that the table exists.
+    $this->assertTrue(db_table_exists($table_name), t('Table %table created.', array('%table' => $table_name)));
 
     // Check the characteristics of the field.
     $this->assertFieldCharacteristics($table_name, 'test_field', $field_spec);
@@ -331,7 +332,8 @@ class SchemaTestCase extends DBTNG_PHPUnit_Framework_TestCase {
       'primary key' => array('serial_column'),
     );
     db_create_table($table_name, $table_spec);
-    $this->pass(t('Table %table created.', array('%table' => $table_name)));
+    // Assert that the table exists.
+    $this->assertTrue(db_table_exists($table_name), t('Table %table created.', array('%table' => $table_name)));
 
     // Insert some rows to the table to test the handling of initial values.
     for ($i = 0; $i < 3; $i++) {
@@ -341,7 +343,7 @@ class SchemaTestCase extends DBTNG_PHPUnit_Framework_TestCase {
     }
 
     db_add_field($table_name, 'test_field', $field_spec);
-    $this->pass(t('Column %column created.', array('%column' => 'test_field')));
+    //$this->pass(t('Column %column created.', array('%column' => 'test_field')));
 
     // Check the characteristics of the field.
     $this->assertFieldCharacteristics($table_name, 'test_field', $field_spec);
@@ -364,7 +366,7 @@ class SchemaTestCase extends DBTNG_PHPUnit_Framework_TestCase {
         ->countQuery()
         ->execute()
         ->fetchField();
-      $this->assertEqual($count, 0, t('Initial values filled out.'));
+      $this->assertEquals($count, 0, t('Initial values filled out.'));
     }
 
     // Check that the default value has been registered.
@@ -378,7 +380,7 @@ class SchemaTestCase extends DBTNG_PHPUnit_Framework_TestCase {
         ->condition('serial_column', $id)
         ->execute()
         ->fetchField();
-      $this->assertEqual($field_value, $field_spec['default'], t('Default value registered.'));
+      $this->assertEquals($field_value, $field_spec['default'], t('Default value registered.'));
     }
 
     db_drop_field($table_name, $field_name);
