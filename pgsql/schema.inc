@@ -223,7 +223,7 @@ class DatabaseSchema_pgsql extends DatabaseSchema {
     // Set the correct database-engine specific datatype.
     // In case one is already provided, force it to lowercase.
     if (isset($field['pgsql_type'])) {
-      $field['pgsql_type'] = drupal_strtolower($field['pgsql_type']);
+      $field['pgsql_type'] = strtolower($field['pgsql_type']);
     }
     else {
       $map = $this->getFieldTypeMap();
