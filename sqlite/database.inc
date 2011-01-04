@@ -11,7 +11,7 @@
  * @{
  */
 
-include_once DRUPAL_ROOT . '/includes/database/prefetch.inc';
+include_once DBTNG_DIR . '/prefetch.inc';
 
 /**
  * Specific SQLite implementation of DatabaseConnection.
