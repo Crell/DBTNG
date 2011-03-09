@@ -16,14 +16,6 @@ class SchemaTestCase extends DBTNG_PHPUnit_Framework_TestCase {
    */
   var $counter;
 
-  public static function getInfo() {
-    return array(
-      'name' => 'Schema API',
-      'description' => 'Tests table creation and modification via the schema API.',
-      'group' => 'Database',
-    );
-  }
-
   /**
    *
    */
